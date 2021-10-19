@@ -47,15 +47,14 @@ func (t *TaskController) UpdateTask(c echo.Context) error {
 
 func (t *TaskController) DeleteTask(c echo.Context) error {
 
-	taskID, err := strconv.ParseUint(c.QueryParam("id"), 10, 32)
+	i, err := strconv.ParseUint(c.Param("id"), 10, 64)
 
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
+		return echo.NewHTTPError(http.StatusBadRequest, "User not found")
 	}
 
 	dbService := services.DatabaseService{}
-
-	dbService.DeleteTask(taskID)
+	dbService.DeleteTask(i)
 
 	return c.NoContent(http.StatusNoContent)
 }
