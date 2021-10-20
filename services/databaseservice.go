@@ -37,6 +37,19 @@ func (d DatabaseService) CreateTask(task *(models.Task)) error {
 	return err
 }
 
+func (d DatabaseService) UpdateTask(task *(models.Task)) error {
+
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	db.AutoMigrate(&models.Task{})
+	db.Save(&task)
+
+	return err
+}
+
 func (d DatabaseService) DeleteTask(id uint64) error {
 
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
@@ -80,6 +93,20 @@ func (d DatabaseService) FindUserByID(id uint) (*models.User, error) {
 	db.First(&user, id)
 
 	return &user, err
+}
+
+func (d DatabaseService) FindTaskByID(id uint64) (*models.Task, error) {
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	db.AutoMigrate(&models.User{})
+
+	var task = models.Task{}
+	db.First(&task, id)
+
+	return &task, err
 }
 
 //Find user from email

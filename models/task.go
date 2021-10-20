@@ -7,10 +7,11 @@ import (
 )
 
 type Task struct {
-	ID          uint `gorm:"primaryKey"`
-	Description string
-	UserID      uint
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   gorm.DeletedAt `gorm:"index"`
+	ID            uint `gorm:"primaryKey"`
+	Description   string
+	ExecutionDate time.Time
+	UserID        uint
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     gorm.DeletedAt `gorm:"index"`
 }

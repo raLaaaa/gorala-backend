@@ -9,7 +9,6 @@ import (
 type UserController struct{}
 
 type UserDTO struct {
-	Description string `json:"description"`
 }
 
 func (u *UserController) CreateUser(c echo.Context) error {

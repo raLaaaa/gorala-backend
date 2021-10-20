@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo"
 	"github.com/raLaaaa/gorala/models"
@@ -14,7 +15,8 @@ import (
 type TaskController struct{}
 
 type TaskDTO struct {
-	Description string `json:"description"`
+	Description   string    `json:"description"`
+	ExecutionDate time.Time `json:"executionDate"`
 }
 
 func (t *TaskController) CreateTask(c echo.Context) error {
@@ -30,8 +32,9 @@ func (t *TaskController) CreateTask(c echo.Context) error {
 	}
 
 	task := models.Task{
-		Description: taskDTO.Description,
-		UserID:      claims.ID,
+		Description:   taskDTO.Description,
+		ExecutionDate: taskDTO.ExecutionDate,
+		UserID:        claims.ID,
 	}
 
 	dbService := services.DatabaseService{}
@@ -42,7 +45,33 @@ func (t *TaskController) CreateTask(c echo.Context) error {
 
 func (t *TaskController) UpdateTask(c echo.Context) error {
 
-	return c.JSON(http.StatusOK, nil)
+	i, err := strconv.ParseUint(c.Param("id"), 10, 64)
+
+	dbService := services.DatabaseService{}
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Task not found (ID Error)")
+	}
+
+	taskFromDB, err := dbService.FindTaskByID(i)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Task not found (Database Error)")
+	}
+
+	taskDTO := new(TaskDTO)
+	if err := c.Bind(taskDTO); err != nil {
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
+	}
+
+	taskFromDB.Description = taskDTO.Description
+	taskFromDB.ExecutionDate = taskDTO.ExecutionDate
+
+	dbService.UpdateTask(taskFromDB)
+
+	return c.JSON(http.StatusCreated, taskFromDB)
 }
 
 func (t *TaskController) DeleteTask(c echo.Context) error {
