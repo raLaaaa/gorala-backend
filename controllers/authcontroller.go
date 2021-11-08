@@ -65,6 +65,8 @@ func (a *AuthController) Login(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{
+		"email": user.Email,
+		"id":    user.ID,
 		"token": t,
 	})
 }
