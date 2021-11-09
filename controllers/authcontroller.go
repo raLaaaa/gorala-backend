@@ -70,3 +70,7 @@ func (a *AuthController) Login(c echo.Context) error {
 		"token": t,
 	})
 }
+
+func (a *AuthController) CheckLogin(c echo.Context) error {
+	return c.String(http.StatusOK, "Success")
+}

@@ -27,6 +27,7 @@ func main() {
 
 	// Routes
 	e.POST("/login", a.Login)
+	authAPIGroup.GET("/checklogin", a.CheckLogin)
 
 	authAPIGroup.GET("/tasks", t.GetAllTasks)
 	authAPIGroup.GET("/me", u.GetUser)
