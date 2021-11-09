@@ -103,3 +103,19 @@ func (t *TaskController) GetAllTasks(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, tasks)
 }
+
+func (t *TaskController) GetTasksForDate(c echo.Context) error {
+
+	dbService := services.DatabaseService{}
+
+	user := c.Get("user").(*jwtv3.Token)
+	claims := user.Claims.(*JwtCustomClaims)
+
+	tasks, err := dbService.FindAllTasksByUserID(claims.ID)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "User not found")
+	}
+
+	return c.JSON(http.StatusOK, tasks)
+}
