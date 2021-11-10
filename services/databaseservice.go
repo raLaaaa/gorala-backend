@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/raLaaaa/gorala/models"
 	"gorm.io/driver/sqlite"
@@ -77,6 +78,25 @@ func (d DatabaseService) FindAllTasksByUserID(idRequestor uint) ([]models.Task, 
 
 	tasks := []models.Task{}
 	db.Model(&requestor).Association("AllTasks").Find(&tasks)
+
+	return tasks, err
+}
+
+func (d DatabaseService) FindAllTasksOfDateByUserID(idRequestor uint, date time.Time) ([]models.Task, error) {
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	db.AutoMigrate(&models.Task{})
+	requestor, errRequestor := d.FindUserByID(idRequestor)
+
+	if errRequestor != nil {
+		fmt.Println(errRequestor)
+	}
+
+	tasks := []models.Task{}
+	db.Model(&requestor).Where("execution_date = ?", date).Association("AllTasks").Find(&tasks)
 
 	return tasks, err
 }
