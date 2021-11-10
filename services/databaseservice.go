@@ -101,6 +101,25 @@ func (d DatabaseService) FindAllTasksOfDateByUserID(idRequestor uint, date time.
 	return tasks, err
 }
 
+func (d DatabaseService) FindAllTasksOfDateInRange(idRequestor uint, start time.Time, end time.Time) ([]models.Task, error) {
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	db.AutoMigrate(&models.Task{})
+	requestor, errRequestor := d.FindUserByID(idRequestor)
+
+	if errRequestor != nil {
+		fmt.Println(errRequestor)
+	}
+
+	tasks := []models.Task{}
+	db.Model(&requestor).Where("execution_date BETWEEN ? AND ?", start, end).Association("AllTasks").Find(&tasks)
+
+	return tasks, err
+}
+
 func (d DatabaseService) FindUserByID(id uint) (*models.User, error) {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {

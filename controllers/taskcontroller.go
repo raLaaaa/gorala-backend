@@ -163,3 +163,41 @@ func (t *TaskController) GetTasksForDate(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, tasks)
 }
+
+func (t *TaskController) GetTasksForDateInRange(c echo.Context) error {
+
+	dbService := services.DatabaseService{}
+
+	slicedParams := strings.Split(c.Param("date"), "-")
+	rangeValue, err := strconv.ParseUint(c.Param("range"), 10, 64)
+
+	if err != nil || rangeValue > 10 || rangeValue < 1 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid Range")
+	}
+
+	if len(slicedParams) != 3 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid Date need 3 params (eg. 01-01-2021)")
+	}
+
+	user := c.Get("user").(*jwtv3.Token)
+	claims := user.Claims.(*JwtCustomClaims)
+
+	year, errYear := strconv.Atoi(slicedParams[2])
+	month, errMonth := strconv.Atoi(slicedParams[1])
+	day, errDay := strconv.Atoi(slicedParams[0])
+
+	if errDay != nil || errMonth != nil || errYear != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid Date")
+	}
+
+	dateStart := time.Date(year, time.Month(month), day-int(rangeValue), 0, 0, 0, 0, time.Now().UTC().Location())
+	dateEnd := time.Date(year, time.Month(month), day+int(rangeValue), 0, 0, 0, 0, time.Now().UTC().Location())
+
+	tasks, err := dbService.FindAllTasksOfDateInRange(claims.ID, dateStart, dateEnd)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "User not found")
+	}
+
+	return c.JSON(http.StatusOK, tasks)
+}

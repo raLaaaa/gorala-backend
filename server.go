@@ -31,6 +31,7 @@ func main() {
 
 	authAPIGroup.GET("/tasks", t.GetAllTasks)
 	authAPIGroup.GET("/tasks/:date", t.GetTasksForDate)
+	authAPIGroup.GET("/tasks/:date/:range", t.GetTasksForDate)
 	authAPIGroup.GET("/tasks/today", t.GetTasksForToday)
 	authAPIGroup.GET("/me", u.GetUser)
 	authAPIGroup.POST("/tasks", t.CreateTask)
