@@ -25,18 +25,17 @@ func main() {
 	}
 	authAPIGroup.Use(middleware.JWTWithConfig(config))
 
-	// Routes
 	e.POST("/login", a.Login)
 	authAPIGroup.GET("/checklogin", a.CheckLogin)
 
 	authAPIGroup.GET("/tasks", t.GetAllTasks)
 	authAPIGroup.GET("/tasks/:date", t.GetTasksForDate)
-	authAPIGroup.GET("/tasks/:date/:range", t.GetTasksForDate)
+	authAPIGroup.GET("/tasks/:date/:range", t.GetTasksForDateInRange)
 	authAPIGroup.GET("/tasks/today", t.GetTasksForToday)
 	authAPIGroup.GET("/me", u.GetUser)
-	authAPIGroup.POST("/tasks", t.CreateTask)
-	authAPIGroup.PUT("/tasks/:id", t.UpdateTask)
-	authAPIGroup.DELETE("/tasks/:id", t.DeleteTask)
-	// Start server
+	authAPIGroup.POST("/tasks/add", t.CreateTask)
+	authAPIGroup.PUT("/tasks/edit/:id", t.UpdateTask)
+	authAPIGroup.DELETE("/tasks/delete/:id", t.DeleteTask)
+
 	e.Logger.Fatal(e.Start(":1323"))
 }

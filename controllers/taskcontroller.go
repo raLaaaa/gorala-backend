@@ -56,7 +56,7 @@ func (t *TaskController) UpdateTask(c echo.Context) error {
 	dbService := services.DatabaseService{}
 
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Task not found (ID Error)")
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	taskFromDB, err := dbService.FindTaskByID(i)
@@ -94,7 +94,7 @@ func (t *TaskController) DeleteTask(c echo.Context) error {
 	dbService := services.DatabaseService{}
 	dbService.DeleteTask(i)
 
-	return c.NoContent(http.StatusNoContent)
+	return c.String(http.StatusOK, "Success")
 }
 
 func (t *TaskController) GetAllTasks(c echo.Context) error {
@@ -171,7 +171,7 @@ func (t *TaskController) GetTasksForDateInRange(c echo.Context) error {
 	slicedParams := strings.Split(c.Param("date"), "-")
 	rangeValue, err := strconv.ParseUint(c.Param("range"), 10, 64)
 
-	if err != nil || rangeValue > 10 || rangeValue < 1 {
+	if err != nil || rangeValue > 99 || rangeValue < 1 {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid Range")
 	}
 
