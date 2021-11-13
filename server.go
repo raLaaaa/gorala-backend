@@ -10,7 +10,6 @@ import (
 func main() {
 	e := echo.New()
 	a := controllers.AuthController{}
-	u := controllers.UserController{}
 	t := controllers.TaskController{}
 
 	authAPIGroup := e.Group("/api/v1")
@@ -26,13 +25,14 @@ func main() {
 	authAPIGroup.Use(middleware.JWTWithConfig(config))
 
 	e.POST("/login", a.Login)
+	e.POST("/register", a.Register)
+
 	authAPIGroup.GET("/checklogin", a.CheckLogin)
 
 	authAPIGroup.GET("/tasks", t.GetAllTasks)
 	authAPIGroup.GET("/tasks/:date", t.GetTasksForDate)
 	authAPIGroup.GET("/tasks/:date/:range", t.GetTasksForDateInRange)
 	authAPIGroup.GET("/tasks/today", t.GetTasksForToday)
-	authAPIGroup.GET("/me", u.GetUser)
 	authAPIGroup.POST("/tasks/add", t.CreateTask)
 	authAPIGroup.PUT("/tasks/edit/:id", t.UpdateTask)
 	authAPIGroup.DELETE("/tasks/delete/:id", t.DeleteTask)

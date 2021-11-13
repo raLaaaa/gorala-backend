@@ -68,7 +68,7 @@ func (t *TaskController) UpdateTask(c echo.Context) error {
 	taskDTO := new(TaskDTO)
 	if err := c.Bind(taskDTO); err != nil {
 		if err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, err)
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 	}
 

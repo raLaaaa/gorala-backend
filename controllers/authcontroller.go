@@ -6,7 +6,9 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo"
+	"github.com/raLaaaa/gorala/models"
 	"github.com/raLaaaa/gorala/services"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthController struct{}
@@ -24,9 +26,10 @@ type UserLoginDTO struct {
 
 func (a *AuthController) Login(c echo.Context) error {
 	userLoginDTO := new(UserLoginDTO)
+
 	if err := c.Bind(userLoginDTO); err != nil {
 		if err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, err)
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 	}
 
@@ -34,11 +37,11 @@ func (a *AuthController) Login(c echo.Context) error {
 	user, err := dbService.FindByEmail(userLoginDTO.Username)
 
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	// Throws unauthorized error
-	if userLoginDTO.Username != user.Email || userLoginDTO.Password != user.Password {
+	if userLoginDTO.Username != user.Email || !checkPasswordHash(userLoginDTO.Password, user.Password) {
 		return echo.ErrUnauthorized
 	}
 
@@ -71,6 +74,51 @@ func (a *AuthController) Login(c echo.Context) error {
 	})
 }
 
+func (a *AuthController) Register(c echo.Context) error {
+	userLoginDTO := new(UserLoginDTO)
+
+	if err := c.Bind(userLoginDTO); err != nil {
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
+	}
+
+	hashedPW, err := hashPassword(userLoginDTO.Password)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	user := models.User{
+		Email:    userLoginDTO.Username,
+		Password: hashedPW,
+		AllTasks: []models.Task{},
+	}
+
+	dbService := services.DatabaseService{}
+	err = dbService.CreateUser(&user)
+
+	print(err)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"user": user,
+	})
+}
+
 func (a *AuthController) CheckLogin(c echo.Context) error {
 	return c.String(http.StatusOK, "Success")
+}
+
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
+func checkPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }

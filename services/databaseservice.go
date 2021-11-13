@@ -20,7 +20,9 @@ func (d DatabaseService) CreateUser(user *(models.User)) error {
 	}
 
 	db.AutoMigrate(&models.User{})
-	db.Create(&user)
+	if err = db.Create(&user).Error; err != nil {
+		return err
+	}
 
 	return err
 }

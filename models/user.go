@@ -7,8 +7,8 @@ import (
 )
 
 type User struct {
-	ID        uint `gorm:"primaryKey"`
-	Email     string
+	ID        uint   `gorm:"primaryKey"`
+	Email     string `gorm:"uniqueIndex"`
 	Password  string
 	AllTasks  []Task `gorm:"foreignKey:UserID"`
 	CreatedAt time.Time
