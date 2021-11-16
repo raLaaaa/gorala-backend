@@ -26,6 +26,7 @@ func main() {
 
 	e.POST("/login", a.Login)
 	e.POST("/register", a.Register)
+	e.GET("/register/confirm/:token", a.ConfirmRegistration)
 
 	authAPIGroup.GET("/checklogin", a.CheckLogin)
 

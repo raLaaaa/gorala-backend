@@ -7,11 +7,13 @@ import (
 )
 
 type User struct {
-	ID        uint   `gorm:"primaryKey"`
-	Email     string `gorm:"uniqueIndex"`
-	Password  string
-	AllTasks  []Task `gorm:"foreignKey:UserID"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	ID                uint   `gorm:"primaryKey"`
+	Email             string `gorm:"uniqueIndex"`
+	Password          string
+	Accepted          bool
+	ConfirmationToken ConfirmationToken `gorm:"foreignKey:UserID"`
+	AllTasks          []Task            `gorm:"foreignKey:UserID"`
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	DeletedAt         gorm.DeletedAt `gorm:"index"`
 }

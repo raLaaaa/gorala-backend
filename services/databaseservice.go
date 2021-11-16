@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/raLaaaa/gorala/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -166,4 +167,59 @@ func (d DatabaseService) FindByEmail(email string) (*models.User, error) {
 	}
 
 	return &user, err
+}
+
+func (d DatabaseService) CreateConfirmationToken(user *models.User) (*models.ConfirmationToken, error) {
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	tokenUUID := uuid.New()
+
+	db.AutoMigrate(&models.ConfirmationToken{})
+	token := models.ConfirmationToken{
+		Token:     tokenUUID.String(),
+		UserID:    user.ID,
+		Activated: false,
+	}
+
+	db.Create(&token)
+
+	return &token, err
+}
+
+func (d DatabaseService) ResolveConfirmationToken(token string) (bool, error) {
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	db.AutoMigrate(&models.ConfirmationToken{})
+
+	tokenObj := models.ConfirmationToken{}
+
+	if err := db.First(&tokenObj, "token = ?", token).Error; err != nil {
+		return false, errors.New("invalid token")
+	}
+
+	if tokenObj.Activated {
+		return false, errors.New("token already redeemed")
+	}
+
+	user, err := d.FindUserByID(tokenObj.UserID)
+
+	if err != nil {
+		return false, errors.New("could not find user")
+	}
+
+	user.Accepted = true
+	db.Save(&user)
+
+	fmt.Println(user.ID)
+
+	tokenObj.Activated = true
+	db.Save(tokenObj)
+
+	return true, err
 }

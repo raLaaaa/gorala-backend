@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/raLaaaa/gorala/models"
 	"github.com/raLaaaa/gorala/services"
+	"github.com/raLaaaa/gorala/utilities"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -40,13 +41,17 @@ func (a *AuthController) Login(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	if user == nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "User not found")
+	}
+
 	// Throws unauthorized error
 	if userLoginDTO.Username != user.Email || !checkPasswordHash(userLoginDTO.Password, user.Password) {
 		return echo.ErrUnauthorized
 	}
 
-	if user == nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "User not found")
+	if !user.Accepted {
+		return echo.NewHTTPError(http.StatusUnauthorized, "Your account has not been confirmed yet")
 	}
 
 	// Set custom claims
@@ -92,21 +97,43 @@ func (a *AuthController) Register(c echo.Context) error {
 	user := models.User{
 		Email:    userLoginDTO.Username,
 		Password: hashedPW,
+		Accepted: false,
 		AllTasks: []models.Task{},
 	}
 
 	dbService := services.DatabaseService{}
 	err = dbService.CreateUser(&user)
 
-	print(err)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "User exists already")
+	}
+
+	confirmToken, err := dbService.CreateConfirmationToken(&user)
 
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	e := utilities.EmailUtil{}
+	e.SendRegistryConfirmation(*confirmToken)
+
 	return c.JSON(http.StatusOK, echo.Map{
-		"user": user,
+		"success": true,
 	})
+}
+
+func (a *AuthController) ConfirmRegistration(c echo.Context) error {
+	token := c.Param("token")
+
+	dbService := services.DatabaseService{}
+	success, err := dbService.ResolveConfirmationToken(token)
+
+	if success && err == nil {
+		return c.String(http.StatusOK, "Success")
+	} else {
+		return c.String(http.StatusBadRequest, "Invalid Token")
+	}
+
 }
 
 func (a *AuthController) CheckLogin(c echo.Context) error {
