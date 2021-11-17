@@ -25,6 +25,10 @@ type UserLoginDTO struct {
 	Password string `json:"password"`
 }
 
+type PasswordRequestDTO struct {
+	Email string `json:"username"`
+}
+
 func (a *AuthController) Login(c echo.Context) error {
 	userLoginDTO := new(UserLoginDTO)
 
@@ -133,7 +137,99 @@ func (a *AuthController) ConfirmRegistration(c echo.Context) error {
 	} else {
 		return c.String(http.StatusBadRequest, "Invalid Token")
 	}
+}
 
+func (a *AuthController) ShowResetPasswordPage(c echo.Context) error {
+	token := c.Param("token")
+
+	dbService := services.DatabaseService{}
+	resetToken, err := dbService.FindResetToken(token)
+
+	if err != nil {
+		return c.String(http.StatusBadRequest, "Invalid token")
+	}
+
+	if resetToken.Activated {
+		return echo.NewHTTPError(http.StatusBadRequest, "Token already used")
+	}
+
+	return c.Render(http.StatusOK, "reset_password", resetToken.Token)
+}
+
+func (a *AuthController) DoPasswordReset(c echo.Context) error {
+	token := c.Param("token")
+	oldPassword := c.FormValue("old_password")
+	newPassword := c.FormValue("new_password")
+
+	dbService := services.DatabaseService{}
+	resetToken, err := dbService.FindResetToken(token)
+
+	if err != nil {
+		return c.String(http.StatusBadRequest, "Invalid token")
+	}
+
+	if resetToken.Activated {
+		return echo.NewHTTPError(http.StatusBadRequest, "Token already used")
+	}
+
+	user, err := dbService.FindUserByID(resetToken.UserID)
+
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	if !checkPasswordHash(oldPassword, user.Password) {
+		return echo.NewHTTPError(http.StatusBadRequest, "Old password incorrect")
+	} else {
+		hashedPW, err := hashPassword(newPassword)
+
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		user.Password = hashedPW
+		dbService.UpdateUser(user)
+		dbService.ResolveResetToken(token)
+		return c.Render(http.StatusOK, "reset_password_success", token)
+	}
+}
+
+func (a *AuthController) RequestPasswordReset(c echo.Context) error {
+	passwordRequestDTO := new(PasswordRequestDTO)
+
+	if err := c.Bind(passwordRequestDTO); err != nil {
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+	}
+
+	if len(passwordRequestDTO.Email) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid user information")
+	}
+
+	dbService := services.DatabaseService{}
+	user, err := dbService.FindByEmail(passwordRequestDTO.Email)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	alreadyExistingTokens, err := dbService.FindAllResetTokensByUserID(user.ID)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	for _, v := range alreadyExistingTokens {
+		v.Activated = true
+		dbService.UpdateResetToken(&v)
+	}
+
+	dbService.CreateResetToken(user)
+
+	//SEND MAIL WITH TOKEN LINK
+
+	return c.String(http.StatusOK, "Success")
 }
 
 func (a *AuthController) CheckLogin(c echo.Context) error {

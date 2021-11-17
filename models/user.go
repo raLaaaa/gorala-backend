@@ -11,6 +11,7 @@ type User struct {
 	Email             string `gorm:"uniqueIndex"`
 	Password          string
 	Accepted          bool
+	ResetToken        ResetToken        `gorm:"foreignKey:UserID"`
 	ConfirmationToken ConfirmationToken `gorm:"foreignKey:UserID"`
 	AllTasks          []Task            `gorm:"foreignKey:UserID"`
 	CreatedAt         time.Time

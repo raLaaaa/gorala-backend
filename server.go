@@ -1,11 +1,22 @@
 package main
 
 import (
+	"io"
+	"text/template"
+
 	"github.com/raLaaaa/gorala/controllers"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
+
+type TemplateRenderer struct {
+	templates *template.Template
+}
+
+func (tem *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	return tem.templates.ExecuteTemplate(w, name, data)
+}
 
 func main() {
 	e := echo.New()
@@ -18,6 +29,12 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Use(middleware.Secure())
 
+	// Renderer
+	renderer := &TemplateRenderer{
+		templates: template.Must(template.ParseGlob("public/views/*.html")),
+	}
+	e.Renderer = renderer
+
 	config := middleware.JWTConfig{
 		Claims:     &controllers.JwtCustomClaims{},
 		SigningKey: []byte("secret"),
@@ -27,6 +44,10 @@ func main() {
 	e.POST("/login", a.Login)
 	e.POST("/register", a.Register)
 	e.GET("/register/confirm/:token", a.ConfirmRegistration)
+
+	e.POST("/reset/request", a.RequestPasswordReset)
+	e.GET("/reset/:token", a.ShowResetPasswordPage)
+	e.POST("/reset/:token", a.DoPasswordReset)
 
 	authAPIGroup.GET("/checklogin", a.CheckLogin)
 
