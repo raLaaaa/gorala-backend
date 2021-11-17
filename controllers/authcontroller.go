@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -150,6 +151,17 @@ func (a *AuthController) ShowResetPasswordPage(c echo.Context) error {
 	}
 
 	if resetToken.Activated {
+		return echo.NewHTTPError(http.StatusBadRequest, "Token already used")
+	}
+
+	now := time.Now()
+	diff := now.Sub(resetToken.CreatedAt)
+
+	fmt.Println(diff)
+
+	if diff.Hours() > 24 {
+		resetToken.Activated = true
+		dbService.UpdateResetToken(resetToken)
 		return echo.NewHTTPError(http.StatusBadRequest, "Token already used")
 	}
 
