@@ -139,7 +139,7 @@ func (a *AuthController) ConfirmRegistration(c echo.Context) error {
 	success, err := dbService.ResolveConfirmationToken(token)
 
 	if success && err == nil {
-		return c.String(http.StatusOK, "Success")
+		return c.String(http.StatusOK, "Success! You can now login")
 	} else {
 		return c.String(http.StatusBadRequest, "Invalid Token")
 	}
