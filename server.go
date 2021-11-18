@@ -34,6 +34,7 @@ func main() {
 		templates: template.Must(template.ParseGlob("public/views/*.html")),
 	}
 	e.Renderer = renderer
+	e.Static("/static", "static")
 
 	config := middleware.JWTConfig{
 		Claims:     &controllers.JwtCustomClaims{},

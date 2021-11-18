@@ -30,6 +30,11 @@ type PasswordRequestDTO struct {
 	Email string `json:"username"`
 }
 
+type PasswordResetDTO struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+}
+
 func (a *AuthController) Login(c echo.Context) error {
 	userLoginDTO := new(UserLoginDTO)
 
@@ -157,7 +162,7 @@ func (a *AuthController) ShowResetPasswordPage(c echo.Context) error {
 	now := time.Now()
 	diff := now.Sub(resetToken.CreatedAt)
 
-	fmt.Println(diff)
+	fmt.Println(diff.Hours())
 
 	if diff.Hours() > 24 {
 		resetToken.Activated = true
@@ -170,8 +175,14 @@ func (a *AuthController) ShowResetPasswordPage(c echo.Context) error {
 
 func (a *AuthController) DoPasswordReset(c echo.Context) error {
 	token := c.Param("token")
-	oldPassword := c.FormValue("old_password")
-	newPassword := c.FormValue("new_password")
+
+	passwordResetDTO := new(PasswordResetDTO)
+
+	if err := c.Bind(passwordResetDTO); err != nil {
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+	}
 
 	dbService := services.DatabaseService{}
 	resetToken, err := dbService.FindResetToken(token)
@@ -181,7 +192,7 @@ func (a *AuthController) DoPasswordReset(c echo.Context) error {
 	}
 
 	if resetToken.Activated {
-		return echo.NewHTTPError(http.StatusBadRequest, "Token already used")
+		return c.String(http.StatusBadRequest, "Token already used")
 	}
 
 	user, err := dbService.FindUserByID(resetToken.UserID)
@@ -190,19 +201,19 @@ func (a *AuthController) DoPasswordReset(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	if !checkPasswordHash(oldPassword, user.Password) {
-		return echo.NewHTTPError(http.StatusBadRequest, "Old password incorrect")
+	if !checkPasswordHash(passwordResetDTO.OldPassword, user.Password) {
+		return c.String(http.StatusBadRequest, "Your old password was incorrect")
 	} else {
-		hashedPW, err := hashPassword(newPassword)
+		hashedPW, err := hashPassword(passwordResetDTO.NewPassword)
 
 		if err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+			return c.String(http.StatusBadRequest, err.Error())
 		}
 
 		user.Password = hashedPW
 		dbService.UpdateUser(user)
 		dbService.ResolveResetToken(token)
-		return c.Render(http.StatusOK, "reset_password_success", token)
+		return c.String(http.StatusOK, "Success")
 	}
 }
 
