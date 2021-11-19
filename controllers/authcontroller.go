@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -125,7 +124,7 @@ func (a *AuthController) Register(c echo.Context) error {
 	}
 
 	e := utilities.EmailUtil{}
-	e.SendRegistryConfirmation(*confirmToken)
+	e.SendRegistryConfirmation(*confirmToken, user)
 
 	return c.JSON(http.StatusOK, echo.Map{
 		"success": true,
@@ -149,6 +148,7 @@ func (a *AuthController) ShowResetPasswordPage(c echo.Context) error {
 	token := c.Param("token")
 
 	dbService := services.DatabaseService{}
+
 	resetToken, err := dbService.FindResetToken(token)
 
 	if err != nil {
@@ -162,8 +162,6 @@ func (a *AuthController) ShowResetPasswordPage(c echo.Context) error {
 	now := time.Now()
 	diff := now.Sub(resetToken.CreatedAt)
 
-	fmt.Println(diff.Hours())
-
 	if diff.Hours() > 24 {
 		resetToken.Activated = true
 		dbService.UpdateResetToken(resetToken)
@@ -171,6 +169,10 @@ func (a *AuthController) ShowResetPasswordPage(c echo.Context) error {
 	}
 
 	return c.Render(http.StatusOK, "reset_password", resetToken.Token)
+}
+
+func (a *AuthController) ShowPrivacyPage(c echo.Context) error {
+	return c.Render(http.StatusOK, "privacy", "")
 }
 
 func (a *AuthController) DoPasswordReset(c echo.Context) error {
@@ -248,9 +250,14 @@ func (a *AuthController) RequestPasswordReset(c echo.Context) error {
 		dbService.UpdateResetToken(&v)
 	}
 
-	dbService.CreateResetToken(user)
+	token, err := dbService.CreateResetToken(user)
 
-	//SEND MAIL WITH TOKEN LINK
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	e := utilities.EmailUtil{}
+	e.SendResetPassword(*token, *user)
 
 	return c.String(http.StatusOK, "Success")
 }

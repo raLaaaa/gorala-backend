@@ -329,3 +329,37 @@ func (d DatabaseService) ResolveConfirmationToken(token string) (bool, error) {
 
 	return true, err
 }
+
+func (d DatabaseService) CreateSentMail(mail *(models.SentMail)) error {
+
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	db.AutoMigrate(&models.SentMail{})
+	if err = db.Create(&mail).Error; err != nil {
+		return err
+	}
+
+	return err
+}
+
+func (d DatabaseService) FindAllEmailsOfToday() ([]models.SentMail, error) {
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	db.AutoMigrate(&models.SentMail{})
+
+	mails := []models.SentMail{}
+
+	now := time.Now()
+	startDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.UTC().Location())
+	endDate := time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 0, now.UTC().Location())
+
+	db.Where("created_at BETWEEN ? AND ?", startDate, endDate).Find(&mails)
+
+	return mails, err
+}
