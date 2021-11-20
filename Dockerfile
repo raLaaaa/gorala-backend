@@ -1,5 +1,31 @@
-FROM golang:1.17
-ADD server.go /go/src/server.go
+# syntax=docker/dockerfile:1
+
+##
+## Build
+##
+FROM golang:1.16-buster AS build
+
+WORKDIR /app
+
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download
+
+COPY *.go ./
+
+RUN go build -o /docker-gs-ping
+
+##
+## Deploy
+##
+FROM gcr.io/distroless/base-debian10
+
+WORKDIR /
+
+COPY --from=build /docker-gs-ping /docker-gs-ping
+
 EXPOSE 4334
-WORKDIR /go/src
-ENTRYPOINT [ "go", "run",  "server.go"]
+
+USER nonroot:nonroot
+
+ENTRYPOINT ["/docker-gs-ping"]
