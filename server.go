@@ -60,5 +60,5 @@ func main() {
 	authAPIGroup.PUT("/tasks/edit/:id", t.UpdateTask)
 	authAPIGroup.DELETE("/tasks/delete/:id", t.DeleteTask)
 
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":4334"))
 }
