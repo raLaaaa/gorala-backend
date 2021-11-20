@@ -1,11 +1,7 @@
 # syntax=docker/dockerfile:1
 
-# syntax=docker/dockerfile:1
 
-##
-## Build
-##
-FROM golang:1.17-buster AS build
+FROM golang:1.17-alpine
 
 WORKDIR /app
 
@@ -16,19 +12,6 @@ COPY . ./
 
 RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /gorala
 
-
-##
-## Deploy
-##
-FROM gcr.io/distroless/base-debian10
-
-WORKDIR /
-
-COPY --from=build /gorala /gorala
-
 EXPOSE 4334
 
-USER nonroot:nonroot
-
-ENTRYPOINT ["/gorala"]
-
+CMD [ "/gorala" ]
