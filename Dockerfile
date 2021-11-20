@@ -1,31 +1,11 @@
-# syntax=docker/dockerfile:1
+FROM alpine AS base
+RUN apk add --no-cache curl wget
 
-##
-## Build
-##
-FROM golang:1.16-buster AS build
+FROM golang:1.11 AS go-builder
+WORKDIR /go/app
+COPY . /go/app
+RUN GO111MODULE=on  CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/app/main /go/app/cmd/myapp/main.go
 
-WORKDIR /app
-
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download
-
-COPY *.go ./
-
-RUN go build -o /docker-gs-ping
-
-##
-## Deploy
-##
-FROM gcr.io/distroless/base-debian10
-
-WORKDIR /
-
-COPY --from=build /docker-gs-ping /docker-gs-ping
-
-EXPOSE 4334
-
-USER nonroot:nonroot
-
-ENTRYPOINT ["/docker-gs-ping"]
+FROM base
+COPY --from=go-builder /go/app/main /main
+CMD ["/main"]
