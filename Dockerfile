@@ -8,7 +8,4 @@ RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/app/ /g
 
 FROM base
 COPY --from=go-builder /go/app/ /main
-RUN ls
-RUN cd main
-RUN ls
 CMD ["/main"]
