@@ -1,13 +1,17 @@
-FROM ubuntu:12.04
+# syntax=docker/dockerfile:1
 
-RUN apt-get install -y python-software-properties
+FROM golang:1.16-alpine
 
-RUN add-apt-repository ppa:duh/golang
-RUN apt-get update
-RUN apt-get install -y golang
+WORKDIR /app
 
-ADD server.go /var/server/server.go
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download
+
+COPY *.go ./
+
+RUN go build -o /docker-gs-ping
 
 EXPOSE 4334
 
-CMD ["go", "run", "/var/server/server.go"]
+CMD [ "/docker-gs-ping" ]
