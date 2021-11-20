@@ -1,18 +1,6 @@
-# syntax=docker/dockerfile:1
-
-FROM golang:1.17-alpine
-
-WORKDIR /app
-
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download
+FROM golang:1.9.2 
+ADD . /go/src/myapp
+WORKDIR /go/src/myapp
+RUN go get myapp
 RUN go install
-
-COPY *.go ./
-
-RUN go build -o /gorala
-
-EXPOSE 4334
-
-CMD [ "/gorala" ]
+ENTRYPOINT ["/go/bin/myapp"]
