@@ -10,8 +10,8 @@ RUN go mod download
 
 COPY *.go ./
 
-RUN go build -o /docker-gs-ping
+RUN go build -o /gorala
 
 EXPOSE 4334
 
-CMD [ "/docker-gs-ping" ]
+CMD [ "/gorala" ]
