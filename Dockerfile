@@ -12,6 +12,6 @@ COPY . ./
 
 RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /gorala
 
-EXPOSE 4334
+EXPOSE 8080
 
 CMD [ "/gorala" ]
