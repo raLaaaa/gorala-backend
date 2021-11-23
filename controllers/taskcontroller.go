@@ -19,6 +19,7 @@ type TaskController struct{}
 type TaskDTO struct {
 	Description   string    `json:"description"`
 	ExecutionDate time.Time `json:"executionDate"`
+	IsFinished    bool      `json:"isFinished"`
 }
 
 func (t *TaskController) CreateTask(c echo.Context) error {
@@ -40,6 +41,7 @@ func (t *TaskController) CreateTask(c echo.Context) error {
 	task := models.Task{
 		Description:   taskDTO.Description,
 		ExecutionDate: roundedDate,
+		IsFinished:    false,
 		UserID:        claims.ID,
 	}
 
@@ -73,6 +75,7 @@ func (t *TaskController) UpdateTask(c echo.Context) error {
 	}
 
 	taskFromDB.Description = taskDTO.Description
+	taskFromDB.IsFinished = taskDTO.IsFinished
 
 	tu := utilities.TimeUtil{}
 	roundedDate := tu.RoundDate(taskDTO.ExecutionDate)
