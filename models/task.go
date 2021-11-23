@@ -11,7 +11,7 @@ type Task struct {
 	Description   string
 	ExecutionDate time.Time
 	UserID        uint
-	IsFinished    bool
+	IsFinished    bool `gorm:"default:false"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
