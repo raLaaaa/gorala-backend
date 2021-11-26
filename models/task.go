@@ -12,6 +12,7 @@ type Task struct {
 	ExecutionDate time.Time
 	UserID        uint
 	IsFinished    bool `gorm:"default:false"`
+	IsCarryOnTask bool `gorm:"default:false"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`

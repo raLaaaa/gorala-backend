@@ -20,6 +20,7 @@ type TaskDTO struct {
 	Description   string    `json:"description"`
 	ExecutionDate time.Time `json:"executionDate"`
 	IsFinished    bool      `json:"isFinished"`
+	IsCarryOnTask bool      `json:"isCarryOnTask"`
 }
 
 func (t *TaskController) CreateTask(c echo.Context) error {
@@ -42,6 +43,7 @@ func (t *TaskController) CreateTask(c echo.Context) error {
 		Description:   taskDTO.Description,
 		ExecutionDate: roundedDate,
 		IsFinished:    false,
+		IsCarryOnTask: taskDTO.IsCarryOnTask,
 		UserID:        claims.ID,
 	}
 
@@ -76,6 +78,7 @@ func (t *TaskController) UpdateTask(c echo.Context) error {
 
 	taskFromDB.Description = taskDTO.Description
 	taskFromDB.IsFinished = taskDTO.IsFinished
+	taskFromDB.IsCarryOnTask = taskDTO.IsCarryOnTask
 
 	tu := utilities.TimeUtil{}
 	roundedDate := tu.RoundDate(taskDTO.ExecutionDate)
