@@ -1,1 +1,0 @@
-# gorala-backend
