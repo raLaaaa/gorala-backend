@@ -22,6 +22,7 @@ func main() {
 	e := echo.New()
 	a := controllers.AuthController{}
 	t := controllers.TaskController{}
+	p := controllers.PageController{}
 
 	authAPIGroup := e.Group("/api/v1")
 	// Middleware
@@ -45,7 +46,8 @@ func main() {
 	e.POST("/login", a.Login)
 	e.POST("/register", a.Register)
 	e.GET("/register/confirm/:token", a.ConfirmRegistration)
-
+	e.GET("/main", p.ShowMainPage)
+	e.GET("/privacy", p.ShowPrivacyPage)
 	e.POST("/reset/request", a.RequestPasswordReset)
 	e.GET("/reset/:token", a.ShowResetPasswordPage)
 	e.POST("/reset/:token", a.DoPasswordReset)

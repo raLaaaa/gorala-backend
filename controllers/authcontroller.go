@@ -171,10 +171,6 @@ func (a *AuthController) ShowResetPasswordPage(c echo.Context) error {
 	return c.Render(http.StatusOK, "reset_password", resetToken.Token)
 }
 
-func (a *AuthController) ShowPrivacyPage(c echo.Context) error {
-	return c.Render(http.StatusOK, "privacy", "")
-}
-
 func (a *AuthController) DoPasswordReset(c echo.Context) error {
 	token := c.Param("token")
 
