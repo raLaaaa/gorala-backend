@@ -30,6 +30,11 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Use(middleware.Secure())
 
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://168.119.153.237:1200"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
+
 	// Renderer
 	renderer := &TemplateRenderer{
 		templates: template.Must(template.ParseGlob("public/views/*.html")),
@@ -46,6 +51,7 @@ func main() {
 	e.POST("/login", a.Login)
 	e.POST("/register", a.Register)
 	e.GET("/register/confirm/:token", a.ConfirmRegistration)
+	e.GET("/", p.ShowMainPage)
 	e.GET("/main", p.ShowMainPage)
 	e.GET("/privacy", p.ShowPrivacyPage)
 	e.POST("/reset/request", a.RequestPasswordReset)
