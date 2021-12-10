@@ -28,7 +28,6 @@ func main() {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(middleware.Secure())
 	e.Use(middleware.CORS())
 
 	// Renderer
