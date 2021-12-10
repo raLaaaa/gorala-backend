@@ -3,13 +3,15 @@
 <html>
 <head>
 
-  <title>gorala</title>
+  <title>gorala - showcase</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="/static/css/spectre.min.css">
+  <link rel="shortcut icon" href="static/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="static/favicon.ico" type="image/x-icon">
 	<style>
 
-  body {background: rgba(255, 255, 255, .60) !important;}
+  body {background: #FAFAFA !important;}
 
       #triangle-topright {
       width: 0;
@@ -18,13 +20,32 @@
       border-left: 100px solid transparent;
     }
 
+    
+    .vcenter { 
+			text-align: left;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			-webkit-transform: translateX(-50%) translateY(-50%);
+    			transform: translateX(-50%) translateY(-50%);
+		}
+
+
 </style>	
 
 <body>
     <div class="float-right" id="triangle-topright"> </div>
 
     <div class="container">
-        <h3> Easy App </h3>
+      <div class="columns">
+        <div class="column vcenter">
+          <div class="form-group" id="form">
+          <h3>Hey, you can checkout the app below</h3>
+          <center>
+          <a class="btn-primary" href="https://app.gorala.icu/#/">Go to the app</a>
+          </center>  
+        </div>
+      </div>
     </div>
 
 </body>
