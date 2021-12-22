@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="/static/css/spectre.min.css">
   <link rel="shortcut icon" href="static/favicon.ico" type="image/x-icon">
   <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<style>
 
   body {background: #FAFAFA !important;}
@@ -20,33 +21,63 @@
       border-left: 100px solid transparent;
     }
 
-    
-    .vcenter { 
-			text-align: left;
-			position: absolute;
-			left: 50%;
-			top: 50%;
-			-webkit-transform: translateX(-50%) translateY(-50%);
-    			transform: translateX(-50%) translateY(-50%);
-		}
+    .app-image {
+      width: 320px; 
+      height 320px;
+    }
 
 
 </style>	
 
 <body>
     <div class="float-right" id="triangle-topright"> </div>
-
     <div class="container">
-      <div class="columns">
-        <div class="column vcenter">
-          <div class="form-group" id="form">
-          <h3>Hey, you can checkout the app below</h3>
-          <center>
-          <a class="btn-primary" href="https://app.gorala.icu/#/">Go to the app</a>
-          </center>  
+      <div class="columns col-gapless">
+        <div class="column col-3 col-ml-auto mt-2">
+          <div>
+            <h4 class="mt-2">
+              Simple. Easy to use. Secure. Helpful.
+            </h4>
+            <p>
+              With gorala you can easily organize your tasks for each specific date. It is simple to use and straight forward. The app scope is limited to the core features of task management to ensure visibility and a clean interface. Simplicity is key.
+            </p>
+              <p>You can find the app for your system below</p>
+            <div class="pb-2">  
+            <div class="chip">
+              <span class="material-icons pr-2">android</span>
+               <a href="https://app.gorala.icu/#/">Android</a>
+            </div>
+            <div class="chip">
+              <span class="material-icons pr-2">apple</span>
+              <a href="https://app.gorala.icu/#/">iPhone</a>
+            </div>
+            <div class="chip">
+              <span class="material-icons pr-2">language</span>
+              <a href="https://app.gorala.icu/#/">Web</a>
+            </div> 
+            <div class="chip">
+              <span class="material-icons pr-2">dvr</span>
+              <a href="https://app.gorala.icu/#/">Desktop</a>
+            </div>
+            </div>
+          </div>  
+          <div class="divider"></div>
+          <h4>
+            Key features of the app
+          </h4>
+          <ul>
+            <li>Simple date related task management</li>
+            <li>Synchronize your tasks between all platforms</li>
+            <li>Use your tasklist with multiple people</li>
+            <li>Choose from different task types</li>
+            <li>No ads</li>
+          </ul>
+        </div>
+        <div class="column col-3 col-mr-auto">
+          <img src="/static/google-pixel4-clearlywhite-portrait.png" class="img-fit-contain app-image" alt="app image">
         </div>
       </div>
-    </div>
+  </div>
 
 </body>
 </html>
