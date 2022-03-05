@@ -47,7 +47,7 @@ func main() {
 	e.POST("/register", a.Register)
 	e.GET("/register/confirm/:token", a.ConfirmRegistration)
 	e.GET("/", p.ShowMainPage)
-	e.GET("/main", p.ShowMainPage)
+	e.GET("/showcase", p.ShowMainPage)
 	e.GET("/privacy", p.ShowPrivacyPage)
 	e.POST("/reset/request", a.RequestPasswordReset)
 	e.GET("/reset/:token", a.ShowResetPasswordPage)
