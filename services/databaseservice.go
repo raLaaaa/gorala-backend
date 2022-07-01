@@ -146,6 +146,35 @@ func (d DatabaseService) FindAllTasksOfDateInRange(idRequestor uint, start time.
 	tasks := []models.Task{}
 	db.Model(&requestor).Where("execution_date BETWEEN ? AND ?", start, end).Association("AllTasks").Find(&tasks)
 
+	carryOnTasks, errCarry := d.FindAllPastCarryOnTasks(idRequestor)
+
+	if errCarry != nil {
+		fmt.Println(errRequestor)
+	}
+
+	tasks = append(tasks, carryOnTasks...)
+
+	return tasks, err
+}
+
+func (d DatabaseService) FindAllPastCarryOnTasks(idRequestor uint) ([]models.Task, error) {
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	db.AutoMigrate(&models.Task{})
+	requestor, errRequestor := d.FindUserByID(idRequestor)
+
+	if errRequestor != nil {
+		fmt.Println(errRequestor)
+	}
+
+	tasks := []models.Task{}
+	now := time.Now()
+	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.UTC().Location())
+	db.Model(&requestor).Where("is_carry_on_task = ?", true).Where("is_finished = ?", false).Where("execution_date < ?", today).Association("AllTasks").Find(&tasks)
+
 	return tasks, err
 }
 
