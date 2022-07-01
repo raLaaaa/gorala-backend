@@ -144,7 +144,7 @@ func (d DatabaseService) FindAllTasksOfDateInRange(idRequestor uint, start time.
 	}
 
 	tasks := []models.Task{}
-	db.Model(&requestor).Where("execution_date BETWEEN ? AND ?", start, end).Association("AllTasks").Find(&tasks)
+	db.Model(&requestor).Where("execution_date BETWEEN ? AND ?", start, end).Where("is_carry_on_task = ?", false).Association("AllTasks").Find(&tasks)
 
 	carryOnTasks, errCarry := d.FindAllPastCarryOnTasks(idRequestor)
 
@@ -173,7 +173,7 @@ func (d DatabaseService) FindAllPastCarryOnTasks(idRequestor uint) ([]models.Tas
 	tasks := []models.Task{}
 	now := time.Now()
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.UTC().Location())
-	db.Model(&requestor).Where("is_carry_on_task = ?", true).Where("is_finished = ?", false).Where("execution_date < ?", today).Association("AllTasks").Find(&tasks)
+	db.Model(&requestor).Where("is_carry_on_task = ?", true).Where("execution_date <= ?", today).Association("AllTasks").Find(&tasks)
 
 	return tasks, err
 }
