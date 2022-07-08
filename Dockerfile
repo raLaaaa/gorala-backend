@@ -9,6 +9,7 @@ COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
 COPY . ./
+VOLUME /database
 
 RUN GO111MODULE=on CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o /gorala
 

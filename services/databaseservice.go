@@ -15,7 +15,7 @@ type DatabaseService struct{}
 
 func (d DatabaseService) CreateUser(user *(models.User)) error {
 
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -30,7 +30,7 @@ func (d DatabaseService) CreateUser(user *(models.User)) error {
 
 func (d DatabaseService) UpdateUser(user *(models.User)) error {
 
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -43,7 +43,7 @@ func (d DatabaseService) UpdateUser(user *(models.User)) error {
 
 func (d DatabaseService) CreateTask(task *(models.Task)) error {
 
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -56,7 +56,7 @@ func (d DatabaseService) CreateTask(task *(models.Task)) error {
 
 func (d DatabaseService) UpdateTask(task *(models.Task)) error {
 
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -69,7 +69,7 @@ func (d DatabaseService) UpdateTask(task *(models.Task)) error {
 
 func (d DatabaseService) UpdateResetToken(token *(models.ResetToken)) error {
 
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -82,7 +82,7 @@ func (d DatabaseService) UpdateResetToken(token *(models.ResetToken)) error {
 
 func (d DatabaseService) DeleteTask(id uint64) error {
 
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -93,7 +93,7 @@ func (d DatabaseService) DeleteTask(id uint64) error {
 }
 
 func (d DatabaseService) FindAllTasksByUserID(idRequestor uint) ([]models.Task, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -112,7 +112,7 @@ func (d DatabaseService) FindAllTasksByUserID(idRequestor uint) ([]models.Task, 
 }
 
 func (d DatabaseService) FindAllTasksOfDateByUserID(idRequestor uint, date time.Time) ([]models.Task, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -131,7 +131,7 @@ func (d DatabaseService) FindAllTasksOfDateByUserID(idRequestor uint, date time.
 }
 
 func (d DatabaseService) FindAllTasksOfDateInRange(idRequestor uint, start time.Time, end time.Time) ([]models.Task, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -158,7 +158,7 @@ func (d DatabaseService) FindAllTasksOfDateInRange(idRequestor uint, start time.
 }
 
 func (d DatabaseService) FindAllPastCarryOnTasks(idRequestor uint) ([]models.Task, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -179,7 +179,7 @@ func (d DatabaseService) FindAllPastCarryOnTasks(idRequestor uint) ([]models.Tas
 }
 
 func (d DatabaseService) FindUserByID(id uint) (*models.User, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -193,7 +193,7 @@ func (d DatabaseService) FindUserByID(id uint) (*models.User, error) {
 }
 
 func (d DatabaseService) FindTaskByID(id uint64) (*models.Task, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -208,7 +208,7 @@ func (d DatabaseService) FindTaskByID(id uint64) (*models.Task, error) {
 
 //Find user from email
 func (d DatabaseService) FindByEmail(email string) (*models.User, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -225,7 +225,7 @@ func (d DatabaseService) FindByEmail(email string) (*models.User, error) {
 }
 
 func (d DatabaseService) FindResetToken(token string) (*models.ResetToken, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -242,7 +242,7 @@ func (d DatabaseService) FindResetToken(token string) (*models.ResetToken, error
 }
 
 func (d DatabaseService) CreateResetToken(user *models.User) (*models.ResetToken, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -262,7 +262,7 @@ func (d DatabaseService) CreateResetToken(user *models.User) (*models.ResetToken
 }
 
 func (d DatabaseService) FindAllResetTokensByUserID(idRequestor uint) ([]models.ResetToken, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -281,7 +281,7 @@ func (d DatabaseService) FindAllResetTokensByUserID(idRequestor uint) ([]models.
 }
 
 func (d DatabaseService) ResolveResetToken(token string) (bool, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -305,7 +305,7 @@ func (d DatabaseService) ResolveResetToken(token string) (bool, error) {
 }
 
 func (d DatabaseService) CreateConfirmationToken(user *models.User) (*models.ConfirmationToken, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -325,7 +325,7 @@ func (d DatabaseService) CreateConfirmationToken(user *models.User) (*models.Con
 }
 
 func (d DatabaseService) ResolveConfirmationToken(token string) (bool, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -361,7 +361,7 @@ func (d DatabaseService) ResolveConfirmationToken(token string) (bool, error) {
 
 func (d DatabaseService) CreateSentMail(mail *(models.SentMail)) error {
 
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -375,7 +375,7 @@ func (d DatabaseService) CreateSentMail(mail *(models.SentMail)) error {
 }
 
 func (d DatabaseService) FindAllEmailsOfToday() ([]models.SentMail, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database/data.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
