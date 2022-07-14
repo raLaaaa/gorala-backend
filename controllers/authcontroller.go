@@ -68,7 +68,8 @@ func (a *AuthController) Login(c echo.Context) error {
 		user.Email,
 		user.ID,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+			// ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+			Issuer: "website",
 		},
 	}
 
