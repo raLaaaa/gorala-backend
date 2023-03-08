@@ -1,6 +1,6 @@
 ## gorala-backend
 
-This is the corrosponding backend for [a note / calendar app written in Flutter](https://github.com/raLaaaa/gorala-client).
+This is the corrosponding backend for [a task / calendar app written in Flutter](https://github.com/raLaaaa/gorala-client).
 The backend is written in Go and uses [Echo](https://echo.labstack.com/) + [GORM](https://gorm.io/). The flutter app uses the API of this project.
 Authentication is done with `JWT`.
 
