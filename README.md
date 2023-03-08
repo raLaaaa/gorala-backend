@@ -12,4 +12,4 @@ If you want to start the application simple use the `Dockerfile` or run `go run 
 This is a pure work in progress side time project and has purely an educational purpose. 
 The project is not finished how ever I decided to share it in case anyone is looking for an [Echo](https://echo.labstack.com/) API example project. 
 
-In case you need information on how to do authentication with [Echo](https://echo.labstack.com/) and JWT, how to use GORM or how to setup an API this repository might help you.
+In case you need information on how to do authentication with [Echo](https://echo.labstack.com/) and JWT, how to use [GORM](https://gorm.io/) or how to setup an API this repository might help you.
