@@ -2,7 +2,7 @@
 
 This is the corrosponding backend for [a note / calendar app written in Flutter](https://github.com/raLaaaa/gorala-client).
 The backend is written in Go and uses [Echo](https://echo.labstack.com/) + [GORM](https://gorm.io/). The flutter app uses the API of this project.
-Authentication is done by `JWT`.
+Authentication is done with `JWT`.
 
 The project also contains a password reset page as well as a basic advertisment page (the page uses google fonts for icons).
 It also uses the Sendinblue API for sending emails. You can setup an environment variable called `SIBKEY` with your api key.
