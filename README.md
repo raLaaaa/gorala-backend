@@ -1,4 +1,4 @@
-# gorala-backend
+## gorala-backend
 
 This is the corrosponding backend for [a note / calendar app written in Flutter](https://github.com/raLaaaa/gorala-client).
 The backend is written in Go and uses [Echo](https://echo.labstack.com/) + [GORM](https://gorm.io/). The flutter app uses the API of this project.
@@ -13,3 +13,6 @@ This is a pure work in progress side time project and has purely an educational 
 The project is not finished how ever I decided to share it in case anyone is looking for an [Echo](https://echo.labstack.com/) API example project. 
 
 In case you need information on how to do authentication with [Echo](https://echo.labstack.com/) and JWT, how to use [GORM](https://gorm.io/) or how to setup an API this repository might help you.
+
+## Licenses
+This library and its content is released under the [MIT License](https://choosealicense.com/licenses/mit/).
